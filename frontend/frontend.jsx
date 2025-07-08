@@ -1,5 +1,4 @@
-function frontent() {
+function frontend() {
   return <div>hello with mern stack developer</div>;
 }
-
-export default frontent;
+export default frontend;
