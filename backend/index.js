@@ -12,6 +12,7 @@ import { globalError } from "./src/middleware/GlobalErrorMiddleWare.js";
 import { photoModel } from "./databases/models/photo.model.js";
 import dotenv from "dotenv";
 import { uploadSingleFile } from "./src/fileUpload/uploads.js";
+import { v2 as cloudinary } from "cloudinary";
 dotenv.config();
 const app = express();
 const port = 3000;
@@ -20,13 +21,33 @@ dbConnection();
 app.use("/", express.static("uploads"));
 app.use(express.json());
 
+cloudinary.config({
+  cloud_name: "dxjtaltvu",
+  api_key: "742444616182915",
+  api_secret: "2FaF0IiOp5YmeLTt1NZYDtkLoHo",
+});
+
 app.post("/photos", uploadSingleFile("img"), async (req, res) => {
-  req.body.img = req.file.filename;
+  // req.body.img = req.file.filename;
+  // // req.body.img = req.files.img[0].filename;
+  // // let images = req.files.images.map((val) => val.filename);
+  // // req.body.images = images;
+  // await photoModel.insertMany(req.body);
+  const uploadResult = await cloudinary.uploader
+    .upload(req.file.path)
+    .catch((error) => {
+      console.log(error);
+    });
+  req.body.img = uploadResult.secure_url;
   await photoModel.insertMany(req.body);
   res.json({ message: "success" });
 });
 
 app.get("/photos", async (req, res) => {
+  //to delete image from cloud
+  // cloudinary.uploader.destroy("v7ajnxponbydywhq7oab", (err, result) => {
+  //   console.log(result);
+  // });
   let photos = await photoModel.find();
   res.json({ message: "success", photos });
 });
@@ -55,4 +76,4 @@ process.on("unhandledRejection", (err) => {
   console.log("error", err);
 });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () => console.log(`sarahah app listening on port ${port}!`));
