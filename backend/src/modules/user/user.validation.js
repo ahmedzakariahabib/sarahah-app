@@ -5,6 +5,7 @@ const signupSchemaVal = Joi.object({
   password: Joi.string().pattern(/^[A-Z][a-z0-9#@]{8,40}$/),
   rePassword: Joi.valid(Joi.ref("password")).required(),
   age: Joi.number().integer().min(10).max(80).required(),
+  role: Joi.string().valid("user", "admin"),
 });
 
 const signinSchemaVal = Joi.object({

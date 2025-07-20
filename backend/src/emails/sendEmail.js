@@ -6,15 +6,15 @@ export const sendEmail = async (email) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "ahmadzakr450@gmail.com",
-      pass: "hdjejwfgdxhekonn",
+      user: process.env.EMAIL_NAME,
+      pass: process.env.EMAIL_PASS,
     },
   });
 
-  let token = jwt.sign({ email }, "myNameIsAhmed");
+  let token = jwt.sign({ email }, process.env.JWT_KEY);
 
   const info = await transporter.sendMail({
-    from: '"ahmed" <ahmadzakr450@gmail.com>',
+    from: `"ahmed"  ${process.env.EMAIL_NAME}`,
     to: email,
     subject: "Hello ✔",
     html: emailTemplate(token),

@@ -7,14 +7,26 @@ import { AppError } from "../../utils/AppError.js";
 
 const signup = catchError(async (req, res) => {
   await userModel.insertMany(req.body);
-  // sendEmail(req.body.email);
+  sendEmail(req.body.email);
   res.json({ message: "success" });
 });
 
 const signin = catchError(async (req, res, next) => {
   let user = await userModel.findOne({ email: req.body.email });
   if (user && bcrypt.compareSync(req.body.password, user.password)) {
-    let token = jwt.sign({ userId: user._id, email: user.email }, "ayKey");
+    if (user.verifyEmail === false) {
+      next(
+        new AppError(
+          "We sent you a verification email, please verify your account ",
+          401
+        )
+      );
+    }
+
+    let token = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_KEY
+    );
     res.json({ message: "success", token });
   }
   // res.json({ message: "incorret email or password" });

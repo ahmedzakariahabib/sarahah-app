@@ -3,16 +3,16 @@
 process.on("uncaughtException", (err) => {
   console.log("error", err);
 });
-import express from "express";
-import messageRouter from "./src/modules/message/message.routes.js";
-import userRouter from "./src/modules/user/user.routes.js";
+import { globalError } from "./src/middleware/GlobalErrorMiddleWare.js";
+import { uploadSingleFile } from "./src/fileUpload/uploads.js";
+import { photoModel } from "./databases/models/photo.model.js";
 import { dbConnection } from "./databases/dbConnection.js";
 import { AppError } from "./src/utils/AppError.js";
-import { globalError } from "./src/middleware/GlobalErrorMiddleWare.js";
-import { photoModel } from "./databases/models/photo.model.js";
-import dotenv from "dotenv";
-import { uploadSingleFile } from "./src/fileUpload/uploads.js";
 import { v2 as cloudinary } from "cloudinary";
+import messageRouter from "./src/modules/message/message.routes.js";
+import userRouter from "./src/modules/user/user.routes.js";
+import express from "express";
+import dotenv from "dotenv";
 dotenv.config();
 const app = express();
 const port = 3000;
@@ -20,7 +20,6 @@ dbConnection();
 
 app.use("/", express.static("uploads"));
 app.use(express.json());
-
 cloudinary.config({
   cloud_name: "dxjtaltvu",
   api_key: "742444616182915",

@@ -1,4 +1,4 @@
 function frontend() {
-  return <div>hello with mern stack developer</div>;
+  return <div>WIP</div>;
 }
 export default frontend;
